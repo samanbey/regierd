@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="hu">
+    <head>
+        <meta charset="utf-8"/>
+		<meta name="viewport" content="initial-scale=1.0;user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="Control.OSMGeocoder.css" />
+		<script src="leaflet.js"></script>
+		<script src="Control.OSMGeocoder.js"></script>
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+			}
+			#map {
+				width: 100%;
+				height: 100%;
+			}
+			#ctl {
+				position: absolute;
+				bottom: 20px;
+				left: 10px;
+				z-index: 10000;
+				padding: 3px;
+				border-radius: 3px;
+				background: #fff;
+			}
+		</style>
+    </head>
+    <body>
+		<div id="map"></div>
+		<div id="ctl">
+			<input type="range" id="op" title="Régi térkép átlátszósága" value="0" />
+		</div>
+		<script>
+			var map = L.map('map').setView([47.4156, 18.88], 15);
+			map.fitBounds([[47.401,18.856],[47.43,18.895]]);
+			L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="https://www.opentpopmap.org/copyright">OpenTopoMap</a>, <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+			var old=L.tileLayer('{z}/{x}/{y}.png', {}).addTo(map);
+			var osmGeocoder = new L.Control.OSMGeocoder({
+				collapsed: false,
+				placeholder: 'Cím keresése...',
+				text: 'Mutat',
+				callback: function(r) {
+					if (r[0]) {
+						console.log(r[0]);
+						var p=L.marker([r[0].lat,r[0].lon]).addTo(map);
+						p.bindPopup(r[0].display_name).openPopup();
+						map.setCenter([r[0].lat,r[0].lon]);
+					}
+					else
+						alert('Nincs találat!');
+				}
+			});
+			map.addControl(osmGeocoder);
+			var op=document.getElementById('op');
+			op.value=0;
+			op.onchange=function() {
+				old.setOpacity((100-op.value)/100);
+			}
+		</script>
+	</body>
+</html>
