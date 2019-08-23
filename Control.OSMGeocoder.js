@@ -114,6 +114,9 @@ L.Control.OSMGeocoder = L.Control.extend({
 	_geocode : function (event) {
 		L.DomEvent.preventDefault(event);
 		var q = this._input.value;
+		// hack: append "Érd" if query does not contain it.
+		if (q.toLowerCase().indexOf('érd')<0)
+			q="Érd "+q;
 		//try to find corrdinates
 		if (this._isLatLon(q) != null)
 		{
