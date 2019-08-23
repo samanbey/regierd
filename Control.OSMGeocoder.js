@@ -116,7 +116,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 		var q = this._input.value;
 		// hack: append "Érd" if query does not contain it.
 		if (q.toLowerCase().indexOf('érd')<0)
-			q="Érd "+q;
+			this._input.value=q="Érd, "+q;
 		//try to find corrdinates
 		if (this._isLatLon(q) != null)
 		{
